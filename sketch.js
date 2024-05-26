@@ -1,5 +1,5 @@
 function initializeP5Sketch() {
-  // Your existing p5.js setup and draw code here...
+  
   var DEBUG = false;
 
 var SCENE_FIXED_SIZE = 1000.0;

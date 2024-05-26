@@ -73,14 +73,61 @@ function Particle() {
   
     this.display = function(sizeMult) {
       beginShape();
-        vertex(-0.67 * sizeMult, -0.67 * sizeMult);
-        vertex(0.64 * sizeMult, 0 * sizeMult);
-        vertex(-0.67 * sizeMult, 0.67 * sizeMult);
-        vertex(-0.67 * sizeMult, 0.512 * sizeMult);
-        vertex(0.36 * sizeMult, 0 * sizeMult);
-        vertex(-0.67 * sizeMult, -0.512 * sizeMult);
+      //Arrow
+        // vertex(-0.67 * sizeMult, -0.67 * sizeMult);
+        // vertex(0.64 * sizeMult, 0 * sizeMult);
+        // vertex(-0.67 * sizeMult, 0.67 * sizeMult);
+        // vertex(-0.67 * sizeMult, 0.512 * sizeMult);
+        // vertex(0.36 * sizeMult, 0 * sizeMult);
+        // vertex(-0.67 * sizeMult, -0.512 * sizeMult);
+        
+      //Traingle
+        // vertex(0, -0.5 * sizeMult);
+        // vertex(0.5 * sizeMult, 0.5 * sizeMult);
+        // vertex(-0.5 * sizeMult, 0.5 * sizeMult);
+
+      //Circle
+      // ellipse(0, 0, sizeMult, sizeMult);
+
+      //Square
+      // rectMode(CENTER);
+      // rect(0, 0, sizeMult, sizeMult);
+      
+      //Hollow Sqaure
+
+          let particleColor = COLOR_ALPHA;
+
+      if (!this.isOutOfBounds()) {
+        particleColor = lerpColor(
+          colorSchemes[colorSchemeIndex][0], colorSchemes[colorSchemeIndex][1],
+          map(this.pos.x, 0, bounds, 0, 1));
+
+        let speedWeight = map(this.vel.mag(), 0, 3, 0, 1);
+        particleColor = lerpColor(particleColor, this.fgColor, speedWeight);
+
+        let edgeData = this.getClosestEdge();
+        let edgeDistance = edgeData[1];
+
+        if (edgeDistance < FADE_DIST_THRESHOLD) {
+          particleColor = lerpColor(
+            particleColor, COLOR_ALPHA,
+            map(edgeDistance, FADE_DIST_THRESHOLD, 0, 0, 1));
+        }
+      }
+
+      noFill();
+      stroke(particleColor);
+      strokeWeight(sizeMult * 0.1); // Adjust the stroke weight as desired
+      
+      beginShape();
+      vertex(-sizeMult / 2, -sizeMult / 2);
+      vertex(sizeMult / 2, -sizeMult / 2);
+      vertex(sizeMult / 2, sizeMult / 2);
+      vertex(-sizeMult / 2, sizeMult / 2);
       endShape(CLOSE);
+          endShape(CLOSE);
     }
+    
   
     this.getClosestEdge = function() {
       let top = abs(this.pos.y);
