@@ -1,4 +1,4 @@
-var PARTICLES_DATA = {
+var PARTICLES_DATA_2 = {
     "RING_COUNT": 7,
     "SCENE_FIXED_SIZE": 1000,
     "particles": [
