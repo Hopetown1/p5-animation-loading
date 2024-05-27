@@ -31,7 +31,9 @@ function Particle() {
     this.targetSize = this.currentSize;
     this.ringNum = 0;
     this.num = 0;
-  
+      
+
+
     this.move = function() {
       this.distToTarget = this.pos.dist(this.target);
       let proximityMult = 1;

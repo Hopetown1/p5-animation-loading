@@ -4,12 +4,13 @@ let currentDataset = PARTICLES_DATA_2;
 document.addEventListener('DOMContentLoaded', (event) => {
   const button = document.getElementById('toggleButton');
   button.addEventListener('click', (event) => {
-    currentDataset = (currentDataset === PARTICLES_DATA) ? PARTICLES_DATA_2 : PARTICLES_DATA;
-      console.log('Button pressed in js');
+    currentDataset = (currentDataset === PARTICLES_DATA_3_new) ? PARTICLES_DATA_2 : PARTICLES_DATA_3_new;
+    console.log("Button clicked, now using: ", currentDataset.name);
+    // rotateAllParticles180();
+    updateParticlesData(currentDataset);
       // reset();
-      setupParticlesFromData();
+      // setupParticlesFromData();
       // setup();
-      
   });
 });
 var DEBUG = false;
@@ -49,6 +50,32 @@ var sceneScaleOffset = 1;
 var bounds = 0;
 var ringCount = 0;
 
+
+
+function updateParticlesData(dataset) {
+  for (let i = 0; i < particles.length; i++) {
+    let particle = particles[i];
+    let newData = dataset.particles.find(p => p.particleId === particle.particleId);
+
+    if (newData) {
+      particle.target.set(newData.targetX, newData.targetY);
+      particle.ringNum = newData.ringNum;
+      particle.num = newData.num;
+      particle.willMerge = newData.willMerge;
+      particle.buddyId = newData.buddy;
+    }
+  }
+
+  // Update buddy relationships
+  for (let i = 0; i < particles.length; i++) {
+    let particle = particles[i];
+    if (particle.willMerge && particle.buddyId !== -1) {
+      particle.buddy = particles.find(p => p.particleId === particle.buddyId);
+    } else {
+      particle.buddy = null;
+    }
+  }
+}
 
 function setup() {
     let myCanvasDiv = document.getElementById('myCanvasDiv');
@@ -95,7 +122,7 @@ function setup() {
     // [COLOR_BLUE, COLOR_SAGE]
   ];
 
-  reset();
+  reset(PARTICLES_DATA_2);
 
   finalRotTarget = new p5.Vector(SCENE_FIXED_SIZE / 2, SCENE_FIXED_SIZE / 2);
 }
@@ -114,9 +141,12 @@ function draw() {
 
   translate(sceneOffsetX, sceneOffsetY);
   scale(sceneScaleOffset);
+  
+  
 
   for (let i = particles.length - 1; i > -1; i--) {
     let p = particles[i];
+
     let timing = frame + int(p.ringNum * 5);
 
     if (p.stage == DEFAULT_EVENT) {
@@ -242,29 +272,30 @@ function windowResized() {
 }
 
 
-function reset() {
+function reset(dataset) {
   particles = [];
   frame = 0;
   colorSchemeIndex = int(random(colorSchemes.length));
-  setupParticlesFromData(currentDataset);
+  setupParticlesFromData(dataset);
+  
 }
 
 
-function setupParticlesFromData(current_dataset) {
-  SCENE_FIXED_SIZE = current_dataset.SCENE_FIXED_SIZE;
-  ringCount = current_dataset.RING_COUNT;
+function setupParticlesFromData(dataset) {
+  SCENE_FIXED_SIZE = dataset.SCENE_FIXED_SIZE;
+  ringCount = dataset.RING_COUNT;
   calculateSceneSizes();
 
-  for (let i = 0; i < current_dataset.particles.length; i++) {
+  for (let i = 0; i < dataset.particles.length; i++) {
     let newParticle = new Particle();
-    newParticle.target.set(current_dataset.particles[i].targetX, current_dataset.particles[i].targetY);
-    newParticle.particleId = current_dataset.particles[i].particleId;
-    newParticle.ringNum = current_dataset.particles[i].ringNum;
-    newParticle.num = current_dataset.particles[i].num;
-    newParticle.willMerge = current_dataset.particles[i].willMerge;
+    newParticle.target.set(dataset.particles[i].targetX, dataset.particles[i].targetY);
+    newParticle.particleId = dataset.particles[i].particleId;
+    newParticle.ringNum = dataset.particles[i].ringNum;
+    newParticle.num = dataset.particles[i].num;
+    newParticle.willMerge = dataset.particles[i].willMerge;
 
     if (newParticle.willMerge) {
-      newParticle.buddyId = current_dataset.particles[i].buddy;
+      newParticle.buddyId = dataset.particles[i].buddy;
     }
 
     particles.push(newParticle);
