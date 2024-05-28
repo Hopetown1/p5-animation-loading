@@ -1,12 +1,12 @@
 import json
 
 def update_particles_data(particles_data3, particles_data2):
-    updated_particles_data3 = []
+    updated_particles_data = []
 
     for particle3 in particles_data3:
         ringNum = particle3["ringNum"]
 
-        if ringNum in [1, 3, 5]:
+        if ringNum in [1, 3]:
             target_ringNum = ringNum - 1
             num = particle3["num"]
 
@@ -16,12 +16,12 @@ def update_particles_data(particles_data3, particles_data2):
                     updated_particle["targetY"] = particle2["targetY"]
                     updated_particle["targetX"] = particle2["targetX"]
                     updated_particle["ringNum"] = ringNum - 1
-                    updated_particles_data3.append(updated_particle)
+                    updated_particles_data.append(updated_particle)
                     break
         else:
-            updated_particles_data3.append(particle3)
+            updated_particles_data.append(particle3)
 
-    return updated_particles_data3
+    return updated_particles_data
 
 
 particles_data_3 = [
@@ -5434,11 +5434,11 @@ particles_data_2 = [
     ]
 
 # Call the update_particles_data function
-updated_particles_data_3 = update_particles_data(particles_data_3, particles_data_2)
+updated_particles_data = update_particles_data(particles_data_3, particles_data_2)
 
 # Print the updated particles data
 # print(json.dumps(updated_particles_data_3, indent=2))
 
 # Create a new JSON file with the updated data
 with open("updated_particles_data.json", "w") as f:
-    json.dump(updated_particles_data_3, f, indent=2)
+    json.dump(updated_particles_data, f, indent=2)

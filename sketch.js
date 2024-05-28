@@ -1,18 +1,59 @@
 // Description: This file contains the main logic for the particle animation.
 
-let currentDataset = PARTICLES_DATA_2;
+// let currentDataset = PARTICLES_DATA_2;
+
 document.addEventListener('DOMContentLoaded', (event) => {
   const button = document.getElementById('toggleButton');
   button.addEventListener('click', (event) => {
-    currentDataset = (currentDataset === PARTICLES_DATA_3_new) ? PARTICLES_DATA_2 : PARTICLES_DATA_3_new;
-    console.log("Button clicked, now using: ", currentDataset.name);
-    // rotateAllParticles180();
-    updateParticlesData(currentDataset);
-      // reset();
-      // setupParticlesFromData();
-      // setup();
+    toggleDatasets();
   });
 });
+const datasetOrder = [
+  'PARTICLES_DATA_ORIGINAL_CIRCLE',
+  'PARTICLES_DATA_1_LAYERS_IN',
+  'PARTICLES_DATA_2_LAYERS_IN',
+  'PARTICLES_DATA_3_LAYERS_IN'
+];
+let currentDatasetIndex = 0;
+let isForwardDirection = true;
+
+function toggleDatasets() {
+  if (isForwardDirection) {
+    currentDatasetIndex++;
+    if (currentDatasetIndex >= datasetOrder.length) {
+      currentDatasetIndex = datasetOrder.length - 2;
+      isForwardDirection = false;
+    }
+  } else {
+    currentDatasetIndex--;
+    if (currentDatasetIndex < 0) {
+      currentDatasetIndex = 1;
+      isForwardDirection = true;
+    }
+  }
+
+  const datasetName = datasetOrder[currentDatasetIndex];
+  const dataset = window[datasetName];
+  updateParticlesData(dataset);
+
+  if (isForwardDirection && currentDatasetIndex < datasetOrder.length - 1) {
+    setTimeout(toggleDatasets, 200);
+  } else if (!isForwardDirection && currentDatasetIndex > 0) {
+    setTimeout(toggleDatasets, 200);
+  }
+}
+// document.addEventListener('DOMContentLoaded', (event) => {
+//   const button = document.getElementById('toggleButton');
+//   button.addEventListener('click', (event) => {
+//     currentDataset = (currentDataset === PARTICLES_DATA_3_new) ? PARTICLES_DATA_2 : PARTICLES_DATA_3_new;
+//     console.log("Button clicked, now using: ", currentDataset.name);
+//     // rotateAllParticles180();
+//     updateParticlesData(currentDataset);
+//       // reset();
+//       // setupParticlesFromData();
+//       // setup();
+//   });
+// });
 var DEBUG = false;
 
 var SCENE_FIXED_SIZE = 1000.0;
@@ -122,7 +163,7 @@ function setup() {
     // [COLOR_BLUE, COLOR_SAGE]
   ];
 
-  reset(PARTICLES_DATA_2);
+  reset(PARTICLES_DATA_ORIGINAL_CIRCLE);
 
   finalRotTarget = new p5.Vector(SCENE_FIXED_SIZE / 2, SCENE_FIXED_SIZE / 2);
 }

@@ -1,7 +1,7 @@
-var PARTICLES_DATA_2 = {
+var PARTICLES_DATA_ORIGINAL_CIRCLE = {
     "RING_COUNT": 7,
     "SCENE_FIXED_SIZE": 1000,
-    "name": "dataset 2",
+    "name": "Circle: all layers out",
     "particles": [
       {
         "willMerge": true,
