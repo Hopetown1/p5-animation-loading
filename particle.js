@@ -1,4 +1,8 @@
 function Particle() {
+
+    this.isTransitioning = false;
+    this.transitionRotation = 0;
+    
     let quarterBounds = bounds / 4;
   
     this.pos = new p5.Vector(
@@ -35,6 +39,7 @@ function Particle() {
 
 
     this.move = function() {
+      
       this.distToTarget = this.pos.dist(this.target);
       let proximityMult = 1;
   
@@ -44,7 +49,11 @@ function Particle() {
       } else {
         this.vel.mult(0.95);
       }
-  
+
+      if (this.distToTarget < 1) {
+        this.isTransitioning = false;
+      }
+
       if (this.distToTarget > 1) {
         let steer = this.target.copy();
         steer.sub(this.pos);
@@ -97,7 +106,7 @@ function Particle() {
       
       //Hollow Sqaure
 
-          let particleColor = COLOR_ALPHA;
+      let particleColor = COLOR_ALPHA;
 
       if (!this.isOutOfBounds()) {
         particleColor = lerpColor(
@@ -127,7 +136,7 @@ function Particle() {
       vertex(sizeMult / 2, sizeMult / 2);
       vertex(-sizeMult / 2, sizeMult / 2);
       endShape(CLOSE);
-          endShape(CLOSE);
+
     }
     
   

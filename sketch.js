@@ -42,18 +42,10 @@ function toggleDatasets() {
     setTimeout(toggleDatasets, 200);
   }
 }
-// document.addEventListener('DOMContentLoaded', (event) => {
-//   const button = document.getElementById('toggleButton');
-//   button.addEventListener('click', (event) => {
-//     currentDataset = (currentDataset === PARTICLES_DATA_3_new) ? PARTICLES_DATA_2 : PARTICLES_DATA_3_new;
-//     console.log("Button clicked, now using: ", currentDataset.name);
-//     // rotateAllParticles180();
-//     updateParticlesData(currentDataset);
-//       // reset();
-//       // setupParticlesFromData();
-//       // setup();
-//   });
-// });
+
+
+
+
 var DEBUG = false;
 
 var SCENE_FIXED_SIZE = 1000.0;
@@ -99,6 +91,7 @@ function updateParticlesData(dataset) {
     let newData = dataset.particles.find(p => p.particleId === particle.particleId);
 
     if (newData) {
+      particle.isTransitioning = true;
       particle.target.set(newData.targetX, newData.targetY);
       particle.ringNum = newData.ringNum;
       particle.num = newData.num;
@@ -169,6 +162,131 @@ function setup() {
 }
 
 
+// function draw() {
+//   if (DEBUG) {
+//     background(0);
+//   } else {
+//     clear();
+//   }
+
+//   noStroke();
+
+//   push();
+
+//   translate(sceneOffsetX, sceneOffsetY);
+//   scale(sceneScaleOffset);
+  
+  
+
+//   for (let i = particles.length - 1; i > -1; i--) {
+//     let p = particles[i];
+
+//     let timing = frame + int(p.ringNum * 5);
+
+//     if (p.stage == DEFAULT_EVENT) {
+//       if (timing >= REORIENT_FRAME) {
+//         p.targetSize = NORMAL_PARTICLE_SIZE;
+//         p.stage = REORIENT_EVENT;
+//       }
+//     } else if (p.stage == REORIENT_EVENT) {
+//       if (timing >= MERGE_FRAME) {
+//         if (p.buddy == null) {
+//           p.setTargetOutOfBounds();
+//         }
+//         p.stage = MERGE_EVENT;
+//       }
+//     }
+
+//     if (p.stage == MERGE_EVENT) {
+//       if (p.willMerge && p.buddy != null) {
+//         p.target = p.buddy.pos.copy();
+//       }
+//     }
+
+//     p.move();
+
+//     if (p.stage == REORIENT_EVENT) {
+//       p.rotTarget = p.rotTarget.lerp(finalRotTarget, 0.05);
+//     }
+//     else if (p.stage == MERGE_EVENT) {
+//       if (p.buddy != null && p.willMerge && p.distToTarget < 1) {
+//         p.buddy.buddy = null;
+//         p.buddy.targetSize = MERGE_PARTICLE_SIZE;
+//         particles.splice(i, 1);
+//         continue;
+//       }
+
+//       if (p.kill) {
+//         if (p.isOutOfBounds()) {
+//           particles.splice(i, 1);
+//           continue;
+//         }
+//       }
+//     }
+
+//     let aim = p.pos.copy();
+//     aim.sub(p.rotTarget);
+//     aim.normalize();
+//     aim.rotate(RAD_180);
+
+//     let finalRot;
+
+//     if (p.distToTarget < TARGET_DIST_THRESHOLD) {
+//       let weight = map(p.distToTarget, 0, TARGET_DIST_THRESHOLD, 1, 0);
+//       let blendRot = p5.Vector.lerp(p.vel, aim, weight);
+//       finalRot = blendRot.heading();
+//     } else {
+//       finalRot = p.vel.heading();
+//     }
+
+//     let particleColor = COLOR_ALPHA;
+
+//     if (!p.isOutOfBounds()) {
+//       particleColor = lerpColor(
+//         colorSchemes[colorSchemeIndex][0], colorSchemes[colorSchemeIndex][1],
+//         map(p.pos.x, 0, bounds, 0, 1));
+
+//       let speedWeight = map(p.vel.mag(), 0, 3, 0, 1);
+//       particleColor = lerpColor(particleColor, p.fgColor, speedWeight);
+
+//       let edgeData = p.getClosestEdge();
+//       let edgeDistance = edgeData[1];
+
+//       if (edgeDistance < FADE_DIST_THRESHOLD) {
+//         particleColor = lerpColor(
+//           particleColor, COLOR_ALPHA,
+//           map(edgeDistance, FADE_DIST_THRESHOLD, 0, 0, 1));
+//       }
+//     }
+
+//     fill(particleColor);
+
+//     let ringSize = map(p.ringNum, 0, ringCount, INNER_PARTICLE_SIZE, OUTER_PARTICLE_SIZE);
+//     p.currentSize = lerp(p.currentSize, p.targetSize, 0.05) + ringSize;
+//     let finalSize = max(p.currentSize - p.vel.mag() * 2, MIN_PARTICLE_SIZE);
+
+//     push();
+//       translate(p.pos.x, p.pos.y);
+//       rotate(finalRot);
+//       p.display(finalSize);
+//     pop();
+//   }
+
+//   if (DEBUG) {
+//     noFill();
+//     stroke(255);
+//     rect(0, 0, bounds, bounds);
+//   }
+
+//   pop();
+
+//   if (DEBUG) {
+//     fill(255);
+//     text(frame, 20, height - 20);
+//   }
+
+//   frame++;
+// }
 function draw() {
   if (DEBUG) {
     background(0);
@@ -182,8 +300,6 @@ function draw() {
 
   translate(sceneOffsetX, sceneOffsetY);
   scale(sceneScaleOffset);
-  
-  
 
   for (let i = particles.length - 1; i > -1; i--) {
     let p = particles[i];
@@ -214,8 +330,7 @@ function draw() {
 
     if (p.stage == REORIENT_EVENT) {
       p.rotTarget = p.rotTarget.lerp(finalRotTarget, 0.05);
-    }
-    else if (p.stage == MERGE_EVENT) {
+    } else if (p.stage == MERGE_EVENT) {
       if (p.buddy != null && p.willMerge && p.distToTarget < 1) {
         p.buddy.buddy = null;
         p.buddy.targetSize = MERGE_PARTICLE_SIZE;
@@ -231,27 +346,14 @@ function draw() {
       }
     }
 
-    let aim = p.pos.copy();
-    aim.sub(p.rotTarget);
-    aim.normalize();
-    aim.rotate(RAD_180);
-
-    let finalRot;
-
-    if (p.distToTarget < TARGET_DIST_THRESHOLD) {
-      let weight = map(p.distToTarget, 0, TARGET_DIST_THRESHOLD, 1, 0);
-      let blendRot = p5.Vector.lerp(p.vel, aim, weight);
-      finalRot = blendRot.heading();
-    } else {
-      finalRot = p.vel.heading();
-    }
-
     let particleColor = COLOR_ALPHA;
 
     if (!p.isOutOfBounds()) {
       particleColor = lerpColor(
-        colorSchemes[colorSchemeIndex][0], colorSchemes[colorSchemeIndex][1],
-        map(p.pos.x, 0, bounds, 0, 1));
+        colorSchemes[colorSchemeIndex][0],
+        colorSchemes[colorSchemeIndex][1],
+        map(p.pos.x, 0, bounds, 0, 1)
+      );
 
       let speedWeight = map(p.vel.mag(), 0, 3, 0, 1);
       particleColor = lerpColor(particleColor, p.fgColor, speedWeight);
@@ -261,8 +363,10 @@ function draw() {
 
       if (edgeDistance < FADE_DIST_THRESHOLD) {
         particleColor = lerpColor(
-          particleColor, COLOR_ALPHA,
-          map(edgeDistance, FADE_DIST_THRESHOLD, 0, 0, 1));
+          particleColor,
+          COLOR_ALPHA,
+          map(edgeDistance, FADE_DIST_THRESHOLD, 0, 0, 1)
+        );
       }
     }
 
@@ -273,9 +377,31 @@ function draw() {
     let finalSize = max(p.currentSize - p.vel.mag() * 2, MIN_PARTICLE_SIZE);
 
     push();
-      translate(p.pos.x, p.pos.y);
+    translate(p.pos.x, p.pos.y);
+
+    if (!p.isTransitioning) {
+      let aim = p.pos.copy();
+      aim.sub(p.rotTarget);
+      aim.normalize();
+      aim.rotate(RAD_180);
+
+      let finalRot;
+
+      if (p.distToTarget < TARGET_DIST_THRESHOLD) {
+        let weight = map(p.distToTarget, 0, TARGET_DIST_THRESHOLD, 1, 0);
+        let blendRot = p5.Vector.lerp(p.vel, aim, weight);
+        finalRot = blendRot.heading();
+      } else {
+        finalRot = p.vel.heading();
+      }
+
       rotate(finalRot);
-      p.display(finalSize);
+      p.transitionRotation = finalRot; // Store the current rotation angle
+    } else {
+      rotate(p.transitionRotation); // Use the stored rotation angle during transition
+    }
+
+    p.display(finalSize);
     pop();
   }
 
@@ -294,7 +420,6 @@ function draw() {
 
   frame++;
 }
-
 
 function mouseClicked() {
   if (DEBUG) {
