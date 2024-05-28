@@ -2,7 +2,7 @@ function Particle() {
 
     this.isTransitioning = false;
     this.transitionRotation = 0;
-    
+
     let quarterBounds = bounds / 4;
   
     this.pos = new p5.Vector(
@@ -83,7 +83,7 @@ function Particle() {
     }
   
     this.display = function(sizeMult) {
-      beginShape();
+     
       //Arrow
         // vertex(-0.67 * sizeMult, -0.67 * sizeMult);
         // vertex(0.64 * sizeMult, 0 * sizeMult);
@@ -104,7 +104,7 @@ function Particle() {
       // rectMode(CENTER);
       // rect(0, 0, sizeMult, sizeMult);
       
-      //Hollow Sqaure
+      
 
       let particleColor = COLOR_ALPHA;
 
@@ -125,18 +125,28 @@ function Particle() {
             map(edgeDistance, FADE_DIST_THRESHOLD, 0, 0, 1));
         }
       }
-
       noFill();
       stroke(particleColor);
-      strokeWeight(sizeMult * 0.1); // Adjust the stroke weight as desired
+      strokeWeight(sizeMult * 0.08); // Adjust the stroke weight as desired
       
-      beginShape();
-      vertex(-sizeMult / 2, -sizeMult / 2);
-      vertex(sizeMult / 2, -sizeMult / 2);
-      vertex(sizeMult / 2, sizeMult / 2);
-      vertex(-sizeMult / 2, sizeMult / 2);
-      endShape(CLOSE);
+      //Hollow Sqaure
+      // beginShape();
+      // vertex(-sizeMult / 2, -sizeMult / 2);
+      // vertex(sizeMult / 2, -sizeMult / 2);
+      // vertex(sizeMult / 2, sizeMult / 2);
+      // vertex(-sizeMult / 2, sizeMult / 2);
+      // endShape(CLOSE);
 
+      //Hollow Diamond
+      let halfWidth = sizeMult * 0.6; // Adjust the width of the diamond
+      let halfHeight = sizeMult * 0.4; // Adjust the height of the diamond
+
+      beginShape();
+      vertex(0, -halfHeight);
+      vertex(halfWidth, 0);
+      vertex(0, halfHeight);
+      vertex(-halfWidth, 0);
+      endShape(CLOSE);
     }
     
   

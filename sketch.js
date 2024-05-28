@@ -503,6 +503,6 @@ function calculateSceneSizes() {
   mouseY = 0;
 }
 
-$(document).ready(function() {
-  initializeP5Sketch();
-});
+// $(document).ready(function() {
+//   initializeP5Sketch();
+// });
